@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import { ReactNode } from "react";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ModalsProvider } from "@/components/providers/ModalsProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import "./globals.css";
@@ -22,7 +23,7 @@ const RootLayout = ({ children }: RootLayoutProps) => (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(font.className, "bg-white dark:bg-[#313338]")}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+          {children} <ModalsProvider />
         </ThemeProvider>
       </body>
     </html>
