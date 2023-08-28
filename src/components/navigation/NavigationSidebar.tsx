@@ -12,7 +12,7 @@ export const NavigationSidebar = async () => {
   const profile = await currentProfile();
 
   if (!profile) {
-    redirect("/");
+    return redirect("/");
   }
 
   const servers = await db.server.findMany({
