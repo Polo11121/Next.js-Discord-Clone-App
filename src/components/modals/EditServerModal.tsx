@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -26,8 +27,15 @@ import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/useModalStore";
 import axios from "axios";
 
-export const CreateServerModal = () => {
+export const EditServerModal = () => {
   const router = useRouter();
+  const { isOpen, onClose, type, server } = useModal((state) => ({
+    isOpen: state.isOpen,
+    server: state.data.server,
+    onClose: state.onClose,
+    type: state.type,
+  }));
+
   const form = useForm({
     defaultValues: {
       name: "",
@@ -35,19 +43,13 @@ export const CreateServerModal = () => {
     },
     resolver: zodResolver(ServerSchema),
   });
-  const { isOpen, onClose, type } = useModal((state) => ({
-    isOpen: state.isOpen,
-
-    onClose: state.onClose,
-    type: state.type,
-  }));
 
   const isLoading = form.formState.isSubmitting;
-  const isModalOpen = isOpen && type === "createServer";
+  const isModalOpen = isOpen && type === "editServer";
 
   const submitHandler = async (values: ServerValidator) => {
     try {
-      await axios.post("/api/servers", values);
+      await axios.patch(`/api/servers/${server?.id}`, values);
 
       form.reset();
       router.refresh();
@@ -61,6 +63,13 @@ export const CreateServerModal = () => {
     form.reset();
     onClose();
   };
+
+  useEffect(() => {
+    if (server) {
+      form.setValue("name", server.name);
+      form.setValue("imageUrl", server.imageUrl);
+    }
+  }, [server, form]);
 
   return (
     <Dialog open={isModalOpen} onOpenChange={closeHandler}>
@@ -121,7 +130,7 @@ export const CreateServerModal = () => {
             </div>
             <DialogFooter className="bg-gray-100 px-6 py-4">
               <Button variant="primary" disabled={isLoading} type="submit">
-                Create
+                Save
               </Button>
             </DialogFooter>
           </form>

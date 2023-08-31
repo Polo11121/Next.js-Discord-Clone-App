@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createServerSchema = z.object({
+export const ServerSchema = z.object({
   name: z.string().min(1, {
     message: "Server name is required",
   }),
@@ -9,4 +9,4 @@ export const createServerSchema = z.object({
   }),
 });
 
-export type CreateServerValidator = z.infer<typeof createServerSchema>;
+export type ServerValidator = z.infer<typeof ServerSchema>;

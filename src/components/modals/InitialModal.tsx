@@ -18,10 +18,7 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import {
-  CreateServerValidator,
-  createServerSchema,
-} from "@/lib/validators/server";
+import { ServerValidator, ServerSchema } from "@/lib/validators/server";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { HydrationProvider } from "@/components/providers/HydrationProvider";
@@ -36,12 +33,12 @@ export const InitialModal = () => {
       name: "",
       imageUrl: "",
     },
-    resolver: zodResolver(createServerSchema),
+    resolver: zodResolver(ServerSchema),
   });
 
   const isLoading = form.formState.isSubmitting;
 
-  const submitHandler = async (values: CreateServerValidator) => {
+  const submitHandler = async (values: ServerValidator) => {
     try {
       await axios.post("/api/servers", values);
 

@@ -1,12 +1,13 @@
-import { v4 as uuid } from "uuid";
 import { z } from "zod";
 import { ServerSchema } from "@/lib/validators/server";
 import { NextResponse } from "next/server";
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
-import { MemberRole } from "@prisma/client";
 
-export const POST = async (req: Request) => {
+export const PATCH = async (
+  req: Request,
+  { params: { serverId } }: { params: { serverId: string } }
+) => {
   try {
     const profile = await currentProfile();
 
@@ -18,34 +19,20 @@ export const POST = async (req: Request) => {
 
     const { name, imageUrl } = ServerSchema.parse(body);
 
-    const server = await db.server.create({
-      data: {
+    const updatedServer = await db.server.update({
+      where: {
+        id: serverId,
         profileId: profile.id,
+      },
+      data: {
         name,
         imageUrl,
-        inviteCode: uuid(),
-        channels: {
-          create: [
-            {
-              name: "general",
-              profileId: profile.id,
-            },
-          ],
-        },
-        members: {
-          create: [
-            {
-              profileId: profile.id,
-              role: MemberRole.ADMIN,
-            },
-          ],
-        },
       },
     });
 
-    return new Response(JSON.stringify(server), { status: 201 });
+    return new Response(JSON.stringify(updatedServer), { status: 200 });
   } catch (error) {
-    console.log("[SERVERS_POST]", error);
+    console.log(`[SERVERS_PATCH_${serverId}]`, error);
 
     if (error instanceof z.ZodError) {
       return new Response(error.message, { status: 422 });
