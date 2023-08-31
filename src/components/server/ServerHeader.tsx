@@ -36,6 +36,7 @@ export const ServerHeader = ({ userRole, server }: ServerHeaderProps) => {
   const openInviteUserModalHandler = () => onOpen("invite", { server });
   const openServerSettingsModalHandler = () => onOpen("editServer", { server });
   const openMembersModalHandler = () => onOpen("members", { server });
+  const createChannelHandler = () => onOpen("createChannel", { server });
 
   return (
     <DropdownMenu>
@@ -74,7 +75,10 @@ export const ServerHeader = ({ userRole, server }: ServerHeaderProps) => {
           </DropdownMenuItem>
         )}
         {isMod && (
-          <DropdownMenuItem className="px-3 py-2 text-sm cursor-pointer">
+          <DropdownMenuItem
+            onClick={createChannelHandler}
+            className="px-3 py-2 text-sm cursor-pointer"
+          >
             Create Channel
             <PlusCircle className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>

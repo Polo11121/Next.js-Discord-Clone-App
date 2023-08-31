@@ -1,8 +1,12 @@
-import { CreateServerModal } from "@/components/modals/CreateServerModal";
-import { InviteUserModal } from "@/components/modals/InviteUserModal";
 import { HydrationProvider } from "@/components/providers/HydrationProvider";
-import { EditServerModal } from "@/components//modals/EditServerModal";
-import { MembersModal } from "@/components/modals/MembersModal";
+import {
+  MembersModal,
+  CreateChannelModal,
+  CreateServerModal,
+  EditServerModal,
+  InitialModal,
+  InviteUserModal,
+} from "@/components/modals";
 
 export const ModalsProvider = () => (
   <HydrationProvider>
@@ -10,5 +14,6 @@ export const ModalsProvider = () => (
     <CreateServerModal />
     <EditServerModal />
     <MembersModal />
+    <CreateChannelModal />
   </HydrationProvider>
 );
