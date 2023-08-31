@@ -38,8 +38,8 @@ export const EditServerModal = () => {
 
   const form = useForm({
     defaultValues: {
-      name: "",
-      imageUrl: "",
+      name: server?.name || "",
+      imageUrl: server?.imageUrl || "",
     },
     resolver: zodResolver(ServerSchema),
   });
@@ -79,8 +79,7 @@ export const EditServerModal = () => {
             Customize your server
           </DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
-            Give your new server a personality with a name and an icon. You can
-            always change it later.
+            Give your server a personality with a name and an icon.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

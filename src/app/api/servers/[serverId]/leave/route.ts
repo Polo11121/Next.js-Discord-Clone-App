@@ -1,4 +1,3 @@
-import { v4 as uuid } from "uuid";
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
@@ -23,16 +22,27 @@ export const PATCH = async (
     const server = await db.server.update({
       where: {
         id: params.serverId,
-        profileId: profile.id,
+        profileId: {
+          not: profile.id,
+        },
+        members: {
+          some: {
+            profileId: profile.id,
+          },
+        },
       },
       data: {
-        inviteCode: uuid(),
+        members: {
+          deleteMany: {
+            profileId: profile.id,
+          },
+        },
       },
     });
 
     return NextResponse.json(server);
   } catch (error) {
-    console.error(`[SERVER_INVITE_${params.serverId}]`, error);
+    console.error(`[SERVER_LEAVE_${params.serverId}]`, error);
 
     return new NextResponse("Internal Error", {
       status: 500,

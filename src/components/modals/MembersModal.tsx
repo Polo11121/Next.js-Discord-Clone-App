@@ -56,7 +56,7 @@ export const MembersModal = () => {
   const router = useRouter();
 
   const isModalOpen = isOpen && type === "members";
-  const membersCount = server?.members.length;
+  const membersCount = server?.members?.length;
 
   const kickMemberHandler = async (memberId: string) => {
     try {
@@ -111,7 +111,7 @@ export const MembersModal = () => {
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="mt-8 max-h-[420px] pr-6">
-          {server?.members.map(
+          {server?.members?.map(
             ({ id, role, profileId, profile: { name, imageUrl, email } }) => (
               <div className="flex items-center gap-x-2 mb-6" key={id}>
                 <UserAvatar src={imageUrl} />
@@ -122,7 +122,7 @@ export const MembersModal = () => {
                   </div>
                   <p className="text-xs text-zinc-500">{email}</p>
                 </div>
-                {server.profileId !== profileId && (
+                {server.profileId !== profileId && loadingId !== id && (
                   <div className="ml-auto">
                     <DropdownMenu>
                       <DropdownMenuTrigger>
@@ -131,7 +131,7 @@ export const MembersModal = () => {
                       <DropdownMenuContent side="left">
                         <DropdownMenuSub>
                           <DropdownMenuSubTrigger className="flex items-center">
-                            <ShieldQuestion className="h-4 w-4 mr-2" />
+                            <ShieldQuestion className="w-4 h-4 mr-2" />
                             <span>Role</span>
                           </DropdownMenuSubTrigger>
                           <DropdownMenuPortal>
@@ -141,7 +141,7 @@ export const MembersModal = () => {
                                   changeRoleHandler(id, MemberRole.GUEST)
                                 }
                               >
-                                <Shield className="w-4 h-4 mr-2" />
+                                <Shield className="h-4 w-4 mr-2" />
                                 Guest
                                 {role === MemberRole.GUEST && (
                                   <Check className="h-4 w-4 ml-auto" />
@@ -152,7 +152,7 @@ export const MembersModal = () => {
                                   changeRoleHandler(id, MemberRole.MODERATOR)
                                 }
                               >
-                                <ShieldCheck className="w-4 h-4 mr-2" />
+                                <ShieldCheck className="h-4 w-4 mr-2" />
                                 Moderator
                                 {role === MemberRole.MODERATOR && (
                                   <Check className="h-4 w-4 ml-auto" />
@@ -161,14 +161,11 @@ export const MembersModal = () => {
                             </DropdownMenuSubContent>
                           </DropdownMenuPortal>
                         </DropdownMenuSub>
-                        <DropdownMenuSeparator>
-                          <DropdownMenuItem
-                            onClick={() => kickMemberHandler(id)}
-                          >
-                            <Gavel className="w-4 h-4 mr-2" />
-                            Kick
-                          </DropdownMenuItem>
-                        </DropdownMenuSeparator>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => kickMemberHandler(id)}>
+                          <Gavel className="h-4 w-4 mr-2" />
+                          Kick
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>

@@ -45,7 +45,7 @@ export const POST = async (req: Request) => {
 
     return new Response(JSON.stringify(server), { status: 201 });
   } catch (error) {
-    console.log("[SERVERS_POST]", error);
+    console.log("[SERVER_CREATE]", error);
 
     if (error instanceof z.ZodError) {
       return new Response(error.message, { status: 422 });

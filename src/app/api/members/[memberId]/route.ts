@@ -61,9 +61,9 @@ export const PATCH = async (
       },
     });
 
-    return new Response(JSON.stringify(updatedServer), { status: 200 });
+    return NextResponse.json(updatedServer);
   } catch (error) {
-    console.log(`[MEMBERS_PATCH_${memberId}]`, error);
+    console.log(`[MEMBER_PATCH_${memberId}]`, error);
 
     return new NextResponse("Internal Error", {
       status: 500,
@@ -120,9 +120,9 @@ export const DELETE = async (
       },
     });
 
-    return new Response(JSON.stringify(updatedServer), { status: 200 });
+    return NextResponse.json(updatedServer);
   } catch (error) {
-    console.log(`[MEMBERS_DELETE_${memberId}]`, error);
+    console.log(`[MEMBER_DELETE_${memberId}]`, error);
 
     return new NextResponse("Internal Error", {
       status: 500,

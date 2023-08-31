@@ -36,7 +36,9 @@ export const ServerHeader = ({ userRole, server }: ServerHeaderProps) => {
   const openInviteUserModalHandler = () => onOpen("invite", { server });
   const openServerSettingsModalHandler = () => onOpen("editServer", { server });
   const openMembersModalHandler = () => onOpen("members", { server });
-  const createChannelHandler = () => onOpen("createChannel", { server });
+  const openCreateChannelHandler = () => onOpen("createChannel", { server });
+  const openLeaveServerHandler = () => onOpen("leaveServer", { server });
+  const openDeleteServerHandler = () => onOpen("deleteServer", { server });
 
   return (
     <DropdownMenu>
@@ -76,7 +78,7 @@ export const ServerHeader = ({ userRole, server }: ServerHeaderProps) => {
         )}
         {isMod && (
           <DropdownMenuItem
-            onClick={createChannelHandler}
+            onClick={openCreateChannelHandler}
             className="px-3 py-2 text-sm cursor-pointer"
           >
             Create Channel
@@ -85,13 +87,19 @@ export const ServerHeader = ({ userRole, server }: ServerHeaderProps) => {
         )}
         {isMod && <DropdownMenuSeparator />}
         {isAdmin && (
-          <DropdownMenuItem className="text-rose-500 px-3 py-2 text-sm cursor-pointer">
+          <DropdownMenuItem
+            onClick={openDeleteServerHandler}
+            className="text-rose-500 px-3 py-2 text-sm cursor-pointer"
+          >
             Delete Server
             <Trash className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
         )}
         {!isAdmin && (
-          <DropdownMenuItem className="text-rose-500 px-3 py-2 text-sm cursor-pointer">
+          <DropdownMenuItem
+            onClick={openLeaveServerHandler}
+            className="text-rose-500 px-3 py-2 text-sm cursor-pointer"
+          >
             Leave Server
             <LogOut className="h-4 w-4 ml-auto" />
           </DropdownMenuItem>
