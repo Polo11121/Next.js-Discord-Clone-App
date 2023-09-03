@@ -41,7 +41,7 @@ export const InviteUserModal = () => {
 
   const createNewLinkHandler = async () => {
     try {
-      setIsLoading(false);
+      setIsLoading(true);
 
       const { data } = await axios.patch(
         `/api/servers/${server?.id}/invite-code`
@@ -51,7 +51,7 @@ export const InviteUserModal = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(true);
+      setIsLoading(false);
     }
   };
 

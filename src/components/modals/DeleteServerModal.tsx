@@ -29,7 +29,7 @@ export const DeleteServerModal = () => {
 
   const deleteServerHandler = async () => {
     try {
-      setIsLoading(false);
+      setIsLoading(true);
 
       await axios.delete(`/api/servers/${server?.id}`);
 
@@ -39,7 +39,7 @@ export const DeleteServerModal = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(true);
+      setIsLoading(false);
     }
   };
 
@@ -51,7 +51,7 @@ export const DeleteServerModal = () => {
             Delete Server
           </DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
-            Are you sure you want to delete this server{" "}
+            Are you sure you want to delete server{" "}
             <span className="font-semibold text-indigo-500">
               {server?.name}
             </span>
@@ -66,7 +66,7 @@ export const DeleteServerModal = () => {
             <Button
               variant="primary"
               onClick={deleteServerHandler}
-              disabled={isLoading}
+              isLoading={isLoading}
             >
               Confirm
             </Button>

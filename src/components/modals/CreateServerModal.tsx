@@ -42,8 +42,10 @@ export const CreateServerModal = () => {
     type: state.type,
   }));
 
-  const isLoading = form.formState.isSubmitting;
   const isModalOpen = isOpen && type === "createServer";
+  const {
+    formState: { isSubmitting, isSubmitSuccessful, isSubmitted, isValid },
+  } = form;
 
   const submitHandler = async (values: ServerValidator) => {
     try {
@@ -88,6 +90,7 @@ export const CreateServerModal = () => {
                     <FormItem>
                       <FormControl>
                         <FileUpload
+                          disabled={isSubmitting || isSubmitSuccessful}
                           endpoint="serverImage"
                           value={field.value}
                           onChange={field.onChange}
@@ -108,7 +111,7 @@ export const CreateServerModal = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
-                        disabled={isLoading}
+                        disabled={isSubmitting || isSubmitSuccessful}
                         className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
                         placeholder="Enter server name"
                         {...field}
@@ -120,7 +123,12 @@ export const CreateServerModal = () => {
               />
             </div>
             <DialogFooter className="bg-gray-100 px-6 py-4">
-              <Button variant="primary" disabled={isLoading} type="submit">
+              <Button
+                variant="primary"
+                isLoading={isSubmitting}
+                disabled={isSubmitted && !isValid}
+                type="submit"
+              >
                 Create
               </Button>
             </DialogFooter>

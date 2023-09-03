@@ -44,8 +44,10 @@ export const EditServerModal = () => {
     resolver: zodResolver(ServerSchema),
   });
 
-  const isLoading = form.formState.isSubmitting;
   const isModalOpen = isOpen && type === "editServer";
+  const {
+    formState: { isSubmitting, isSubmitSuccessful, isSubmitted, isValid },
+  } = form;
 
   const submitHandler = async (values: ServerValidator) => {
     try {
@@ -96,6 +98,7 @@ export const EditServerModal = () => {
                     <FormItem>
                       <FormControl>
                         <FileUpload
+                          disabled={isSubmitting || isSubmitSuccessful}
                           endpoint="serverImage"
                           value={field.value}
                           onChange={field.onChange}
@@ -116,7 +119,7 @@ export const EditServerModal = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
-                        disabled={isLoading}
+                        disabled={isSubmitting || isSubmitSuccessful}
                         className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
                         placeholder="Enter server name"
                         {...field}
@@ -128,7 +131,12 @@ export const EditServerModal = () => {
               />
             </div>
             <DialogFooter className="bg-gray-100 px-6 py-4">
-              <Button variant="primary" disabled={isLoading} type="submit">
+              <Button
+                variant="primary"
+                isLoading={isSubmitting}
+                disabled={isSubmitted && !isValid}
+                type="submit"
+              >
                 Save
               </Button>
             </DialogFooter>

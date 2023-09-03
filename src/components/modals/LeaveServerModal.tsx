@@ -29,7 +29,7 @@ export const LeaveServerModal = () => {
 
   const leaveServerHandler = async () => {
     try {
-      setIsLoading(false);
+      setIsLoading(true);
 
       await axios.patch(`/api/servers/${server?.id}/leave`);
 
@@ -39,7 +39,7 @@ export const LeaveServerModal = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(true);
+      setIsLoading(false);
     }
   };
 
@@ -66,7 +66,7 @@ export const LeaveServerModal = () => {
             <Button
               variant="primary"
               onClick={leaveServerHandler}
-              disabled={isLoading}
+              isLoading={isLoading}
             >
               Confirm
             </Button>

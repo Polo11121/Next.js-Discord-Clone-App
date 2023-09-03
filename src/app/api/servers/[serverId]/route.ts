@@ -15,6 +15,10 @@ export const PATCH = async (
       return new Response("Unauthorized", { status: 401 });
     }
 
+    if (!serverId) {
+      return new Response("Server Id Missing", { status: 400 });
+    }
+
     const body = await req.json();
 
     const { name, imageUrl } = ServerSchema.parse(body);

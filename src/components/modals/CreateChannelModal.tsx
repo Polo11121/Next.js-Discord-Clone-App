@@ -49,8 +49,10 @@ export const CreateChannelModal = () => {
     type: state.type,
   }));
 
-  const isLoading = form.formState.isSubmitting;
   const isModalOpen = isOpen && type === "createChannel";
+  const {
+    formState: { isSubmitting, isSubmitSuccessful, isSubmitted, isValid },
+  } = form;
 
   const submitHandler = async (values: ChannelValidator) => {
     try {
@@ -82,7 +84,7 @@ export const CreateChannelModal = () => {
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
             Create Channel
-          </DialogTitle>{" "}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -100,7 +102,7 @@ export const CreateChannelModal = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
-                        disabled={isLoading}
+                        disabled={isSubmitting || isSubmitSuccessful}
                         className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
                         placeholder="Enter channel name"
                         {...field}
@@ -119,7 +121,7 @@ export const CreateChannelModal = () => {
                       Channel Type
                     </FormLabel>
                     <Select
-                      disabled={isLoading}
+                      disabled={isSubmitting || isSubmitSuccessful}
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
@@ -146,7 +148,12 @@ export const CreateChannelModal = () => {
               />
             </div>
             <DialogFooter className="bg-gray-100 px-6 py-4">
-              <Button variant="primary" disabled={isLoading} type="submit">
+              <Button
+                variant="primary"
+                isLoading={isSubmitting}
+                disabled={isSubmitted && !isValid}
+                type="submit"
+              >
                 Create
               </Button>
             </DialogFooter>

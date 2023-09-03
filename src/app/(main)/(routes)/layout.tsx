@@ -1,17 +1,28 @@
 import { ReactNode } from "react";
 import { NavigationSidebar } from "@/components/navigation/NavigationSidebar";
-import { currentProfile } from "@/lib/currentProfile";
-import { redirectToSignIn } from "@clerk/nextjs";
+import { auth, redirectToSignIn } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
 
 type MainLayoutProps = {
   children: ReactNode;
 };
 
 const MainLayout = async ({ children }: MainLayoutProps) => {
-  const profile = await currentProfile();
+  const { userId } = auth();
+
+  if (!userId) {
+    return redirectToSignIn();
+  }
+
+  const profile = await db.profile.findUnique({
+    where: {
+      userId: userId,
+    },
+  });
 
   if (!profile) {
-    return redirectToSignIn();
+    return redirect("/");
   }
 
   return (

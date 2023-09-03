@@ -62,7 +62,7 @@ export const MembersModal = () => {
     try {
       setLoadingId(memberId);
 
-      const url = qs.stringify({
+      const url = qs.stringifyUrl({
         url: `/api/members/${memberId}`,
         query: {
           serverId: server.id,
@@ -82,10 +82,10 @@ export const MembersModal = () => {
     try {
       setLoadingId(memberId);
 
-      const url = qs.stringify({
+      const url = qs.stringifyUrl({
         url: `/api/members/${memberId}`,
         query: {
-          serverId: server.id,
+          serverId: server?.id,
         },
       });
 
