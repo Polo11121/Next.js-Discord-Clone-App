@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -37,6 +38,7 @@ export const InitialModal = () => {
   });
 
   const {
+    reset,
     formState: { isSubmitting, isValid, isSubmitted, isSubmitSuccessful },
   } = form;
 
@@ -44,13 +46,18 @@ export const InitialModal = () => {
     try {
       await axios.post("/api/servers", values);
 
-      form.reset();
       router.refresh();
       window.location.reload();
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <HydrationProvider>

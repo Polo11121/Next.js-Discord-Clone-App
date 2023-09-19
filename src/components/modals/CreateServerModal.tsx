@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -37,13 +38,13 @@ export const CreateServerModal = () => {
   });
   const { isOpen, onClose, type } = useModal((state) => ({
     isOpen: state.isOpen,
-
     onClose: state.onClose,
     type: state.type,
   }));
 
   const isModalOpen = isOpen && type === "createServer";
   const {
+    reset,
     formState: { isSubmitting, isSubmitSuccessful, isSubmitted, isValid },
   } = form;
 
@@ -51,18 +52,23 @@ export const CreateServerModal = () => {
     try {
       await axios.post("/api/servers", values);
 
-      form.reset();
       router.refresh();
       onClose();
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const closeHandler = () => {
-    form.reset();
+    reset();
     onClose();
   };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <Dialog open={isModalOpen} onOpenChange={closeHandler}>

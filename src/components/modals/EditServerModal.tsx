@@ -46,6 +46,7 @@ export const EditServerModal = () => {
 
   const isModalOpen = isOpen && type === "editServer";
   const {
+    reset,
     formState: { isSubmitting, isSubmitSuccessful, isSubmitted, isValid },
   } = form;
 
@@ -53,16 +54,15 @@ export const EditServerModal = () => {
     try {
       await axios.patch(`/api/servers/${server?.id}`, values);
 
-      form.reset();
       router.refresh();
       onClose();
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const closeHandler = () => {
-    form.reset();
+    reset();
     onClose();
   };
 
@@ -72,6 +72,12 @@ export const EditServerModal = () => {
       form.setValue("imageUrl", server.imageUrl);
     }
   }, [server, form]);
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <Dialog open={isModalOpen} onOpenChange={closeHandler}>

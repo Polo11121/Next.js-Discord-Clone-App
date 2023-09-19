@@ -9,7 +9,7 @@ import {
 import { useModal } from "@/hooks/useModalStore";
 import { Label } from "@/components/ui/Label";
 import { Input } from "@/components/ui/Input";
-import { Button } from "../ui/Button";
+import { Button } from "@/components/ui/Button";
 import { Check, Copy, RefreshCw } from "lucide-react";
 import { useOrigin } from "@/hooks/useOrigin";
 import { useState } from "react";

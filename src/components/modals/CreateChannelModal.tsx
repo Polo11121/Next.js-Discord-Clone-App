@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -34,24 +35,32 @@ import axios from "axios";
 import qs from "query-string";
 
 export const CreateChannelModal = () => {
-  const router = useRouter();
-  const params = useParams();
-  const form = useForm({
-    defaultValues: {
-      name: "",
-      type: ChannelType.TEXT,
-    },
-    resolver: zodResolver(ChannelSchema),
-  });
-  const { isOpen, onClose, type } = useModal((state) => ({
+  const {
+    isOpen,
+    onClose,
+    type,
+    data: { channelType },
+  } = useModal((state) => ({
     isOpen: state.isOpen,
     onClose: state.onClose,
     type: state.type,
+    data: state.data,
   }));
+  const form = useForm({
+    defaultValues: {
+      name: "",
+      type: channelType || ChannelType.TEXT,
+    },
+    resolver: zodResolver(ChannelSchema),
+  });
+  const router = useRouter();
+  const params = useParams();
 
   const isModalOpen = isOpen && type === "createChannel";
   const {
-    formState: { isSubmitting, isSubmitSuccessful, isSubmitted, isValid },
+    setValue,
+    reset,
+    formState: { isSubmitting, isSubmitted, isSubmitSuccessful, isValid },
   } = form;
 
   const submitHandler = async (values: ChannelValidator) => {
@@ -65,18 +74,29 @@ export const CreateChannelModal = () => {
 
       await axios.post(url, values);
 
-      form.reset();
       router.refresh();
       onClose();
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const closeHandler = () => {
-    form.reset();
+    reset();
     onClose();
   };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
+
+  useEffect(() => {
+    if (channelType) {
+      setValue("type", channelType);
+    }
+  }, [channelType, setValue]);
 
   return (
     <Dialog open={isModalOpen} onOpenChange={closeHandler}>
