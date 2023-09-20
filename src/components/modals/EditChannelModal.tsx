@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/Button";
 import { ChannelSchema, ChannelValidator } from "@/lib/validators/channel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/useModalStore";
 import {
   Select,
@@ -34,40 +34,43 @@ import { ChannelType } from "@prisma/client";
 import axios from "axios";
 import qs from "query-string";
 
-export const CreateChannelModal = () => {
-  const { isOpen, onClose, type, channelType } = useModal((state) => ({
+export const EditChannelModal = () => {
+  const { isOpen, onClose, type, channel, server } = useModal((state) => ({
     isOpen: state.isOpen,
     onClose: state.onClose,
     type: state.type,
-    channelType: state.data.channelType,
+    channel: state.data.channel,
+    server: state.data.server,
   }));
   const form = useForm({
     defaultValues: {
-      name: "",
-      type: channelType || ChannelType.TEXT,
+      name: channel?.name || "",
+      type: channel?.type || ChannelType.TEXT,
     },
     resolver: zodResolver(ChannelSchema),
   });
   const router = useRouter();
-  const params = useParams();
 
-  const isModalOpen = isOpen && type === "createChannel";
+  const isModalOpen = isOpen && type === "editChannel";
   const {
     setValue,
     reset,
+    watch,
     formState: { isSubmitting, isSubmitted, isSubmitSuccessful, isValid },
   } = form;
+
+  const [name, channelType] = watch(["name", "type"]);
 
   const submitHandler = async (values: ChannelValidator) => {
     try {
       const url = qs.stringifyUrl({
-        url: "/api/channels",
+        url: `/api/channels/${channel?.id}`,
         query: {
-          serverId: params?.serverId,
+          serverId: server?.id,
         },
       });
 
-      await axios.post(url, values);
+      await axios.patch(url, values);
 
       router.refresh();
       onClose();
@@ -88,17 +91,22 @@ export const CreateChannelModal = () => {
   }, [isSubmitSuccessful, reset]);
 
   useEffect(() => {
-    if (channelType) {
-      setValue("type", channelType);
+    if (channel) {
+      setValue("name", channel.name);
+      setValue("type", channel.type);
     }
-  }, [channelType, setValue]);
+  }, [channel, setValue]);
+
+  const isButtonDisabled =
+    (isSubmitted && !isValid) ||
+    (channel?.name === name && channel?.type === channelType);
 
   return (
     <Dialog open={isModalOpen} onOpenChange={closeHandler}>
       <DialogContent className="bg-white text-black p-0 overflow-hidden">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
-            Create Channel
+            Edit Channel
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -166,10 +174,10 @@ export const CreateChannelModal = () => {
               <Button
                 variant="primary"
                 isLoading={isSubmitting}
-                disabled={isSubmitted && !isValid}
+                disabled={isButtonDisabled}
                 type="submit"
               >
-                Create
+                Save
               </Button>
             </DialogFooter>
           </form>

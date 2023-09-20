@@ -6,3 +6,5 @@ export { MembersModal } from "@/components/modals/MembersModal";
 export { InitialModal } from "@/components/modals/InitialModal";
 export { LeaveServerModal } from "@/components/modals/LeaveServerModal";
 export { DeleteServerModal } from "@/components/modals/DeleteServerModal";
+export { DeleteChannelModal } from "@/components/modals/DeleteChannelModal";
+export { EditChannelModal } from "@/components/modals/EditChannelModal";

@@ -7,6 +7,8 @@ import {
   InviteUserModal,
   LeaveServerModal,
   DeleteServerModal,
+  DeleteChannelModal,
+  EditChannelModal,
 } from "@/components/modals";
 
 export const ModalsProvider = () => (
@@ -18,5 +20,7 @@ export const ModalsProvider = () => (
     <LeaveServerModal />
     <CreateChannelModal />
     <DeleteServerModal />
+    <DeleteChannelModal />
+    <EditChannelModal />
   </HydrationProvider>
 );

@@ -47,8 +47,12 @@ export const EditServerModal = () => {
   const isModalOpen = isOpen && type === "editServer";
   const {
     reset,
+    watch,
+    setValue,
     formState: { isSubmitting, isSubmitSuccessful, isSubmitted, isValid },
   } = form;
+
+  const [name, imageUrl] = watch(["name", "imageUrl"]);
 
   const submitHandler = async (values: ServerValidator) => {
     try {
@@ -68,16 +72,20 @@ export const EditServerModal = () => {
 
   useEffect(() => {
     if (server) {
-      form.setValue("name", server.name);
-      form.setValue("imageUrl", server.imageUrl);
+      setValue("name", server.name);
+      setValue("imageUrl", server.imageUrl);
     }
-  }, [server, form]);
+  }, [server, setValue]);
 
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset();
     }
   }, [isSubmitSuccessful, reset]);
+
+  const isButtonDisabled =
+    (isSubmitted && !isValid) ||
+    (server?.name === name && server?.imageUrl === imageUrl);
 
   return (
     <Dialog open={isModalOpen} onOpenChange={closeHandler}>
@@ -140,7 +148,7 @@ export const EditServerModal = () => {
               <Button
                 variant="primary"
                 isLoading={isSubmitting}
-                disabled={isSubmitted && !isValid}
+                disabled={isButtonDisabled}
                 type="submit"
               >
                 Save
