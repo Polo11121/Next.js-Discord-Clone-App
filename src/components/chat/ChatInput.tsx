@@ -3,10 +3,12 @@
 import { MessageSchema, MessageValidator } from "@/lib/validators/message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/Form";
+import { EmojiPicker } from "@/components/EmojiPicker";
 import { Input } from "@/components/ui/Input";
 import { useForm } from "react-hook-form";
-import { Plus, Smile } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useModal } from "@/hooks/useModalStore";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import qs from "query-string";
 
@@ -27,8 +29,12 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
     },
     resolver: zodResolver(MessageSchema),
   });
+  const router = useRouter();
 
   const {
+    reset,
+    getValues,
+    setValue,
     formState: { isSubmitting },
   } = form;
 
@@ -39,6 +45,9 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
         query,
       });
       await axios.post(url, values);
+
+      reset();
+      router.refresh();
     } catch (error) {
       console.log(error);
     }
@@ -49,6 +58,9 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
       apiUrl,
       query,
     });
+
+  const pickEmojiHandler = (emoji: any) =>
+    setValue("content", `${getValues("content")}${emoji}`);
 
   return (
     <Form {...form}>
@@ -76,7 +88,7 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
                     {...field}
                   />
                   <div className="absolute top-7 right-8">
-                    <Smile />
+                    <EmojiPicker onChange={pickEmojiHandler} />
                   </div>
                 </div>
               </FormControl>
