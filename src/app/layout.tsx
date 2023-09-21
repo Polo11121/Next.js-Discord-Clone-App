@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ModalsProvider } from "@/components/providers/ModalsProvider";
 import { SocketProvider } from "@/components/providers/SocketProvider";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import "./globals.css";
@@ -25,7 +26,9 @@ const RootLayout = ({ children }: RootLayoutProps) => (
       <body className={cn(font.className, "bg-white dark:bg-[#313338]")}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <SocketProvider>
-            {children} <ModalsProvider />
+            <QueryProvider>
+              {children} <ModalsProvider />
+            </QueryProvider>
           </SocketProvider>
         </ThemeProvider>
       </body>
