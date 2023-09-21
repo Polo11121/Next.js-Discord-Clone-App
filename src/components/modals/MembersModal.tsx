@@ -10,7 +10,7 @@ import {
   DialogDescription,
 } from "@/components/ui/Dialog";
 import { useModal } from "@/hooks/useModalStore";
-import { ServerWithMembersWithProfiles } from "@/type";
+import { ServerWithMembersWithProfiles } from "@/types";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { UserAvatar } from "@/components/UserAvatar";
 import {
