@@ -1,18 +1,25 @@
+import { MediaRoom } from "@/components/MediaRoom";
 import { ChatHeader } from "@/components/chat/ChatHeader";
+import { ChatInput } from "@/components/chat/ChatInput";
+import { ChatMessages } from "@/components/chat/ChatMessages";
+import { redirect } from "next/navigation";
 import { getOrCreateConversation } from "@/lib/conversation";
 import { currentProfile } from "@/lib/currentProfile";
 import { db } from "@/lib/db";
-import { redirect } from "next/navigation";
 
 type ConversationPageProps = {
   params: {
     serverId: string;
     memberId: string;
   };
+  searchParams: {
+    video?: boolean;
+  };
 };
 
 const ConversationPage = async ({
   params: { serverId, memberId },
+  searchParams: { video },
 }: ConversationPageProps) => {
   const profile = await currentProfile();
 
@@ -50,6 +57,33 @@ const ConversationPage = async ({
         serverId={serverId}
         type="conversation"
       />
+      {video ? (
+        <MediaRoom chatId={conversation.id} video={true} audio={true} />
+      ) : (
+        <>
+          <ChatMessages
+            member={currentMember}
+            name={name}
+            chatId={conversation.id}
+            type="conversation"
+            apiUrl="/api/direct-messages"
+            paramKey="conversationId"
+            paramValue={conversation.id}
+            socketUrl="/api/socket/direct-messages"
+            socketQuery={{
+              conversationId: conversation.id,
+            }}
+          />
+          <ChatInput
+            apiUrl="/api/socket/direct-messages"
+            name={name}
+            type="conversation"
+            query={{
+              conversationId: conversation.id,
+            }}
+          />
+        </>
+      )}
     </div>
   );
 };

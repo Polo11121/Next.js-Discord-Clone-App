@@ -17,17 +17,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    const { serverId, channelId } = req.query;
+    const { conversationId } = req.query;
 
-    if (!serverId) {
+    if (!conversationId) {
       return res.status(422).json({
-        message: "Server Id is required",
-      });
-    }
-
-    if (!channelId) {
-      return res.status(422).json({
-        message: "Channel Id is required",
+        message: "Conversation Id is required",
       });
     }
 
@@ -42,53 +36,57 @@ const handler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
       });
     }
 
-    const server = await db.server.findFirst({
+    const conversation = await db.conversation.findFirst({
       where: {
-        id: serverId as string,
-        members: {
-          some: {
-            profileId: profile.id,
+        id: conversationId as string,
+        OR: [
+          {
+            memberOne: {
+              profileId: profile.id,
+            },
+          },
+          {
+            memberTwo: {
+              profileId: profile.id,
+            },
+          },
+        ],
+      },
+      include: {
+        memberOne: {
+          include: {
+            profile: true,
+          },
+        },
+        memberTwo: {
+          include: {
+            profile: true,
           },
         },
       },
-      include: {
-        members: true,
-      },
     });
 
-    if (!server) {
+    if (!conversation) {
       return res.status(404).json({
-        message: "Server not found",
+        message: "Conversation not found",
       });
     }
 
-    const channel = await db.channel.findFirst({
-      where: {
-        id: channelId as string,
-        serverId: server.id,
-      },
-    });
-
-    if (!channel) {
-      return res.status(404).json({
-        message: "Channel not found",
-      });
-    }
-
-    const member = server.members.find(
-      (member) => member.profileId === profile.id
-    );
+    const member =
+      conversation.memberOne.profileId === profile.id
+        ? conversation.memberOne
+        : conversation.memberTwo;
 
     if (!member) {
       return res.status(404).json({
         message: "Member not found",
       });
     }
-    const message = await db.message.create({
+    const message = await db.directMessage.create({
       data: {
         content,
         fileUrl,
-        channelId: channel.id,
+        conversationId: conversation.id,
         memberId: member.id,
       },
       include: {
@@ -100,13 +98,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
       },
     });
 
-    const channelKey = `chat:${channel.id}:messages`;
+    const channelKey = `chat:${conversation.id}:messages`;
 
     res?.socket?.server?.io?.emit(channelKey, message);
 
     return res.status(200).json(message);
   } catch (error) {
-    console.log("[CHANNEL_UPDATE]", error);
+    console.log("[DIRECT_CHANNEL_UPDATE]", error);
 
     if (error instanceof z.ZodError) {
       return res.status(422).json({
