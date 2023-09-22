@@ -37,15 +37,15 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
     setIsOpen(false);
 
     if (type === "member") {
-      router.push(`/servers/${params.serverId}/conversation/${id}}`);
+      router.push(`/servers/${params?.serverId}/conversation/${id}}`);
     } else {
-      router.push(`/servers/${params.serverId}/channels/${id}`);
+      router.push(`/servers/${params?.serverId}/channels/${id}`);
     }
   };
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if ((e.key === "k" && e.ctrlKey) || e.metaKey) {
+      if (e.key === "k" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         openHandler();
       }

@@ -9,3 +9,4 @@ export { DeleteServerModal } from "@/components/modals/DeleteServerModal";
 export { DeleteChannelModal } from "@/components/modals/DeleteChannelModal";
 export { MessageFileModal } from "@/components/modals/MessageFileModal";
 export { EditChannelModal } from "@/components/modals/EditChannelModal";
+export { DeleteMessageModal } from "@/components/modals/DeleteMessageModal";
