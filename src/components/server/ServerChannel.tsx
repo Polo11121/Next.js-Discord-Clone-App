@@ -32,7 +32,7 @@ export const ServerChannel = ({
 
   const Icon = iconMap[channel.type];
 
-  const isCurrentChannel = channel.id === params.channelId;
+  const isCurrentChannel = channel.id === params?.channelId;
 
   const openChannelHandler = () =>
     router.push(`/servers/${server.id}/channels/${channel.id}`);
